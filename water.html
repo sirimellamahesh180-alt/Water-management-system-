@@ -1,0 +1,1278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5.0, user-scalable=yes" />
+<title>Water Management System - Desktop Workspace</title>
+<!-- External Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --brand-blue: #2563eb;
+  --brand-cyan: #0891b2;
+  --brand-gradient: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+  --muted: #475569;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --border-color: #cbd5e1;
+  --transition: all 0.2s ease-in-out;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: #0f172a;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 15px;
+}
+a { color: inherit; text-decoration: none; }
+
+/* Desktop Top Navigation Bar */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; height: 80px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; z-index: 60;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
+}
+.brand { display: flex; gap: 14px; align-items: center; }
+.brand .logo {
+  color: #fff; font-size: 20px; display: flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 12px; background: var(--brand-gradient);
+  box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+  flex-shrink: 0;
+}
+.brand .title { font-weight: 800; color: #0f172a; font-size: 18px; letter-spacing: -0.01em; }
+
+.nav { display: flex; gap: 8px; align-items: center; margin-left: 32px; }
+.nav .link {
+  padding: 10px 18px; border-radius: 10px; color: #334155;
+  font-weight: 600; font-size: 14px; cursor: pointer; transition: var(--transition);
+  display: flex; align-items: center; gap: 10px; white-space: nowrap;
+}
+.nav .link:hover { background: rgba(37,99,235,0.08); color: var(--brand-blue); }
+.nav .link.active { background: var(--brand-gradient); color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,0.25); }
+
+.auth-area { display: flex; gap: 16px; align-items: center; flex-shrink: 0; }
+.btn {
+  background: var(--brand-gradient); color: #fff; border: 0; padding: 12px 24px;
+  border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 14px;
+  transition: var(--transition); box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn.ghost { background: transparent; color: var(--brand-blue); border: 1.5px solid rgba(37,99,235,0.3); box-shadow: none; }
+.btn.small { padding: 9px 16px; font-size: 13px; border-radius: 8px; }
+.btn.danger { background: #ef4444; box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2); }
+.btn.success-btn { background: linear-gradient(135deg, #059669 0%, #0d9488 100%); box-shadow: 0 4px 14px rgba(13,148,136,0.2); }
+
+main { padding: 112px 40px 60px; max-width: 1440px; margin: 0 auto; flex: 1; width: 100%; display: flex; flex-direction: column; }
+
+.card {
+  background: var(--card-bg); border-radius: 20px; padding: 36px;
+  box-shadow: 0 10px 30px -5px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.03); 
+  margin-bottom: 28px; border: 1px solid var(--border-color); width: 100%;
+}
+.h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin: 0 0 8px; letter-spacing: -0.02em; }
+label { display: block; font-size: 13px; color: #334155; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"], textarea, select {
+  width: 100% !important; height: 50px !important; padding: 0 18px !important;
+  border-radius: 10px !important; border: 1.5px solid #94a3b8 !important; outline: none !important;
+  font-size: 15px !important; font-family: inherit !important; color: #0f172a !important;
+  background: #ffffff !important; transition: var(--transition) !important;
+}
+input:read-only {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  cursor: not-allowed;
+  border-color: #cbd5e1 !important;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--brand-blue) !important; background: #fff !important;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.12) !important;
+}
+.row { display: flex; gap: 24px; align-items: center; margin-bottom: 24px; width: 100%; }
+.col { flex: 1; min-width: 0; }
+
+table.table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 16px; font-size: 14px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); }
+table.table th, table.table td { padding: 16px 24px; text-align: left; vertical-align: middle; border-bottom: 1px solid #e2e8f0; }
+table.table th { background: #f1f5f9; font-weight: 700; color: #1e293b; }
+table.table td { background: #ffffff; color: #0f172a; }
+.muted { color: var(--muted); font-size: 15px; font-weight: 500; }
+.error { color: #dc2626; margin-top: 12px; font-size: 14px; background: #fef2f2; padding: 14px 18px; border-radius: 8px; border: 1px solid #fee2e2; font-weight: 600; }
+.success { color: #065f46; margin-top: 12px; font-size: 14px; background: #ecfdf5; padding: 14px 18px; border-radius: 8px; border: 1px solid #a7f3d0; font-weight: 600; }
+
+.auth-split-wrapper { display: flex; width: 100%; max-width: 1000px; min-height: 560px; background: #ffffff; border-radius: 24px; overflow: hidden; margin: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); border: 1px solid var(--border-color); }
+.auth-left-panel { flex: 1.1; padding: 48px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%); border-right: 1px solid #e2e8f0; text-align: center; }
+.auth-left-panel .brand-top { font-size: 16px; font-weight: 700; color: #0f172a; }
+.auth-left-panel .water-display { font-size: 80px; color: var(--brand-blue); margin: auto 0; animation: float 3s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.auth-left-panel .footer-txt { font-size: 13px; color: #64748b; }
+.auth-right-panel { flex: 1.4; padding: 48px; display: flex; flex-direction: column; justify-content: center; }
+.auth-form-container h3 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: #0f172a; letter-spacing: -0.02em; }
+.auth-form-container .auth-sub { font-size: 15px; color: var(--muted); margin-bottom: 28px; }
+
+.overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 120; padding: 24px; }
+.overlay.active { display: flex; }
+.modal { width: 100%; max-width: 820px; background: var(--card-bg); border-radius: 24px; padding: 36px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); max-height: 90vh; overflow-y: auto; position: relative; }
+.modal .closeX { position: absolute; right: 24px; top: 24px; background: #e2e8f0; border: 0; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; cursor: pointer; color: #334155; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+.modal .closeX:hover { background: #cbd5e1; color: #0f172a; }
+
+.a4 { background: #fff; padding: 20mm; width: 100%; max-width: 210mm; margin: 0 auto; color: #0f172a; border-radius: 8px; font-size: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); border: 1px solid #94a3b8; }
+.items-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+.items-table th, .items-table td { border: 1px solid #94a3b8; padding: 14px 18px; font-size: 14px; }
+.items-table th { background: #f1f5f9; font-weight: 700; color: #1e293b; }
+
+.checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f1f5f9;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+  cursor: pointer;
+  margin: 20px 0;
+}
+.checkbox-wrap input[type="checkbox"] {
+  width: 20px !important;
+  height: 20px !important;
+  accent-color: var(--brand-blue);
+  cursor: pointer;
+}
+
+.js-error-overlay {
+  position: fixed; inset: 12px; z-index: 2000; background: rgba(255,240,240,0.98); border: 1px solid #ffdddd;
+  padding: 16px; color: #900; font-family: monospace; white-space: pre-wrap; overflow:auto; border-radius: 8px;
+}
+</style>
+</head>
+<body>
+<script>
+window.addEventListener('error', function (ev) {
+  try {
+    const msg = ev && (ev.error && ev.error.stack || ev.message || String(ev));
+    console.error('Captured error', ev);
+    const existing = document.querySelector('.js-error-overlay');
+    if (existing) existing.textContent = 'JavaScript Error:\n' + msg;
+    else {
+      const pre = document.createElement('pre');
+      pre.className = 'js-error-overlay';
+      pre.textContent = 'JavaScript Error:\n' + msg;
+      document.documentElement.appendChild(pre);
+    }
+  } catch (e) { /* ignore */ }
+});
+window.addEventListener('unhandledrejection', function (ev) {
+  try {
+    const reason = ev.reason && (ev.reason.stack || ev.reason.message || String(ev.reason));
+    console.error('Unhandled rejection', ev);
+    const existing = document.querySelector('.js-error-overlay');
+    if (existing) existing.textContent = 'Unhandled promise rejection:\n' + reason;
+    else {
+      const pre = document.createElement('pre');
+      pre.className = 'js-error-overlay';
+      pre.textContent = 'Unhandled promise rejection:\n' + reason;
+      document.documentElement.appendChild(pre);
+    }
+  } catch (e) { /* ignore */ }
+});
+</script>
+
+<!-- Top Navigation Bar -->
+<header class="topbar" id="topbar" style="display:none;">
+  <div style="display:flex; align-items:center; width:100%; justify-content:space-between;">
+    <div style="display:flex; align-items:center; min-width: 0;">
+      <div class="brand">
+        <div class="logo"><i class="fa-solid fa-droplet"></i></div>
+        <div class="title">Water Management System</div>
+      </div>
+      <nav class="nav">
+        <div class="link active" data-view="home" title="Dashboard"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></div>
+        <div class="link" data-view="files-new" title="New Bill"><i class="fa-solid fa-file-circle-plus"></i><span>New Bill</span></div>
+        <div class="link" data-view="data" title="Database"><i class="fa-solid fa-database"></i><span>Database</span></div>
+        <div class="link" data-view="profile" title="Profile"><i class="fa-solid fa-user"></i><span>Profile</span></div>
+      </nav>
+    </div>
+    <div class="auth-area" id="authArea"></div>
+  </div>
+</header>
+
+<!-- Main View Container -->
+<main id="main"></main>
+
+<!-- Global Modal Overlay -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="closeX" id="modalCloseX">×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const Storage = {
+  usersKey: 'wm_users_v3',
+  invoicesKey: 'wm_bills_v3',
+  currentKey: 'wm_current_user_v3',
+  lastLoginIdKey: 'wm_last_login_id_v3',
+  readUsers() { return JSON.parse(localStorage.getItem(this.usersKey) || '[]'); },
+  writeUsers(u) { localStorage.setItem(this.usersKey, JSON.stringify(u)); },
+  addUser(user) {
+    const list = this.readUsers();
+    const existing = list.findIndex(u => u.loginld === user.loginld);
+    if (existing >= 0) { list[existing] = user; } else { list.push(user); }
+    this.writeUsers(list);
+    localStorage.setItem(this.lastLoginIdKey, user.loginld);
+    return true;
+  },
+  findUser(loginld) { return this.readUsers().find(u => u.loginld === loginld); },
+  readInvoices() { return JSON.parse(localStorage.getItem(this.invoicesKey) || '[]'); },
+  writeInvoices(list) { localStorage.setItem(this.invoicesKey, JSON.stringify(list)); },
+  saveInvoice(inv) {
+    const list = this.readInvoices();
+    const idx = list.findIndex(i => i.id === inv.id);
+    const now = new Date();
+    const dateStr = `${('0' + now.getDate()).slice(-2)}/${('0' + (now.getMonth() + 1)).slice(-2)}/${now.getFullYear()}`;
+    const timeStr = now.toLocaleTimeString();
+    if (idx >= 0) {
+      inv.editDate = dateStr;
+      inv.editTime = timeStr;
+      list[idx] = inv;
+    } else {
+      inv.createdAt = now.toISOString();
+      inv.genDate = dateStr;
+      inv.genTime = timeStr;
+      inv.editDate = dateStr;
+      inv.editTime = timeStr;
+      list.push(inv);
+    }
+    this.writeInvoices(list);
+  },
+  deleteInvoice(id) { this.writeInvoices(this.readInvoices().filter(i => i.id !== id)); },
+  getLastCustomerReading(phone, customerName) {
+    const list = this.readInvoices();
+    const cleanPhone = (phone || '').trim();
+    const cleanName = (customerName || '').trim().toLowerCase();
+    
+    const matches = list.filter(i => {
+      const cPhone = (i.meta?.phone || '').trim();
+      const cName = (i.meta?.customer || '').trim().toLowerCase();
+      const phoneMatch = cleanPhone && cPhone === cleanPhone;
+      const nameMatch = cleanName && cName === cleanName;
+      return phoneMatch || nameMatch;
+    });
+
+    if (matches.length === 0) {
+      if (list.length > 0) {
+        list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        return parseFloat(list[0].meta?.currentReading ?? 0);
+      }
+      return 0;
+    }
+    matches.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    return parseFloat(matches[0].meta?.currentReading ?? 0);
+  },
+  setCurrent(user, remember = false) {
+    localStorage.setItem(this.currentKey, JSON.stringify(user));
+    if (remember) localStorage.setItem('wm_remember_v3', JSON.stringify(user));
+  },
+  getCurrent() {
+    return JSON.parse(localStorage.getItem(this.currentKey) || localStorage.getItem('wm_remember_v3') || 'null');
+  },
+  logout() {
+    localStorage.removeItem(this.currentKey);
+    localStorage.removeItem('wm_remember_v3');
+  },
+  getLastLoginId() { return localStorage.getItem(this.lastLoginIdKey) || 'MAHESH-3682'; }
+};
+
+const Auth = {
+  genLoginId(name) {
+    const base = (name || 'USER').replace(/\s+/g, '').toUpperCase().slice(0, 6);
+    const rand = Math.floor(1000 + Math.random() * 8999);
+    return base + '-' + rand;
+  },
+  login(loginld, password) {
+    const u = Storage.findUser(loginld);
+    if (!u) return { ok: false, reason: 'not_found' };
+    if (u.password !== password) return { ok: false, reason: 'invalid_password' };
+    return { ok: true, user: u };
+  }
+};
+
+function validateIndianMobile(phone) {
+  return /^[6-9]\d{9}$/.test((phone || '').trim());
+}
+
+const InvoiceUtil = {
+  genBillId() {
+    const seq = Math.floor(100 + Math.random() * 899);
+    return `WM-${seq}`;
+  },
+  renderInvoiceHtml(inv) {
+    const meta = inv.meta || {};
+    const totalAmount = meta.totalAmount || 0;
+    const paidBadge = meta.paid ? '<span style="color:#059669;font-weight:700; background:#ecfdf5; padding:6px 14px; border-radius:6px;">PAID</span>' : '<span style="color:#dc2626;font-weight:700; background:#fef2f2; padding:6px 14px; border-radius:6px;">UNPAID</span>';
+    return `
+<div class="a4" id="pdfInvoiceContent">
+  <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 24px;">
+    <div>
+      <div style="font-size: 22px; font-weight: 800; color: #2563eb;">WATER MANAGEMENT SYSTEM</div>
+      <div style="font-size: 14px; color: #475569; margin-top: 4px;">Official Water Bill Invoice Statement</div>
+    </div>
+    <div>${paidBadge}</div>
+  </div>
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; font-size: 15px;">
+    <div>
+      <div><strong>Customer Name:</strong> ${escapeHtml(meta.customer || '')}</div>
+      <div style="margin-top: 8px;"><strong>Phone:</strong> +91 ${escapeHtml(meta.phone || '')}</div>
+      <div style="margin-top: 8px;"><strong>Payment Mode:</strong> ${escapeHtml(meta.paymentType || 'Offline')}</div>
+      ${meta.paid && meta.transactionRef ? `<div style="margin-top: 8px;"><strong>Transaction Ref:</strong> ${escapeHtml(meta.transactionRef)}</div>` : ''}
+    </div>
+    <div style="text-align: right;">
+      <div><strong>Date:</strong> ${escapeHtml(meta.dateStr || '')}</div>
+      <div style="margin-top: 8px;"><strong>Bill ID:</strong> ${escapeHtml(meta.billld)}</div>
+    </div>
+  </div>
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th style="width: 25%;">Consumption Units</th>
+        <th style="width: 18%;">Rate</th>
+        <th style="width: 18%;">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Water Consumption Charge</td>
+        <td>${meta.consumption || 0} Litres</td>
+        <td>₹${parseFloat(meta.rate || 0).toFixed(2)}</td>
+        <td>₹${totalAmount.toFixed(2)}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top: 28px; text-align: right; font-size: 18px; font-weight: 800; color:#0f172a;">
+    Total Payable: <span style="color:#2563eb;">₹${totalAmount.toFixed(2)}</span>
+  </div>
+</div>`;
+  }
+};
+
+function escapeHtml(str = '') {
+  return String(str).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
+}
+
+const main = document.getElementById('main');
+const topbar = document.getElementById('topbar');
+const overlay = document.getElementById('overlay');
+const modal = document.getElementById('modal');
+const modalContent = document.getElementById('modalContent');
+const authArea = document.getElementById('authArea');
+let editingInvoice = null;
+let modalEscHandler = null;
+
+function initApp() {
+  bindNavEvents();
+  const currentUser = Storage.getCurrent();
+  if (!currentUser) {
+    topbar.style.display = 'none';
+    routeTo('login');
+  } else {
+    topbar.style.display = 'flex';
+    renderTopAuth();
+    routeTo('home');
+  }
+  document.getElementById('modalCloseX').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+}
+
+function bindNavEvents() {
+  document.querySelectorAll('[data-view]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetView = el.getAttribute('data-view');
+      document.querySelectorAll('.nav .link').forEach(l => l.classList.remove('active'));
+      const topNavLink = document.querySelector(`.nav [data-view="${targetView}"]`);
+      if (topNavLink) topNavLink.classList.add('active');
+      routeTo(targetView);
+    });
+  });
+}
+
+function routeTo(view) {
+  const user = Storage.getCurrent();
+  if (!user && view !== 'login' && view !== 'register' && view !== 'forgot') {
+    routeTo('login'); return;
+  }
+  if (user) topbar.style.display = 'flex'; else topbar.style.display = 'none';
+  if (view === 'home') renderHome();
+  else if (view === 'login') renderLoginSplitView();
+  else if (view === 'register') renderRegisterSplitView();
+  else if (view === 'forgot') renderForgotSplitView();
+  else if (view === 'files-new') renderFilesNew();
+  else if (view === 'data') renderData();
+  else if (view === 'profile') renderProfile();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderTopAuth() {
+  authArea.innerHTML = '';
+  const btnOut = document.createElement('button');
+  btnOut.className = 'btn small danger';
+  btnOut.innerHTML = '<i class="fa-solid fa-right-from-bracket"></i> Logout';
+  btnOut.onclick = () => {
+    if (confirm('Are you sure you want to log out?')) {
+      Storage.logout();
+      topbar.style.display = 'none';
+      routeTo('login');
+    }
+  };
+  authArea.appendChild(btnOut);
+}
+
+function showInlineMessage(text, type = 'success') {
+  const msg = document.createElement('div');
+  msg.className = type === 'success' ? 'success' : 'error';
+  msg.innerText = text;
+  main.prepend(msg);
+  setTimeout(() => msg.remove(), 3500);
+}
+
+function renderLoginSplitView() {
+  const defaultId = Storage.getLastLoginId();
+  main.innerHTML = `
+<div class="auth-split-wrapper">
+  <div class="auth-left-panel">
+    <div class="brand-top"><i class="fa-solid fa-droplet"></i> Water Management Portal</div>
+    <div class="water-display"><i class="fa-solid fa-water"></i></div>
+    <div class="footer-txt">© 2005-2026 Water Management Systems</div>
+  </div>
+  <div class="auth-right-panel">
+    <div class="auth-form-container">
+      <h3>Welcome Back</h3>
+      <div class="auth-sub">Sign in to manage your desktop billing records</div>
+      <div>
+        <div style="margin-bottom: 20px;">
+          <label>Login ID</label>
+          <input id="login_id" type="text" value="${escapeHtml(defaultId)}" placeholder="e.g. MAHESH-3682" required />
+        </div>
+        <div style="margin-bottom: 16px;">
+          <label>Password</label>
+          <input id="login_pwd" type="password" value="" placeholder="••••••••" required />
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 24px; font-size: 14px;">
+          <a href="#" id="linkForgot" style="color: var(--brand-blue); font-weight: 700;">Forgot Password?</a>
+        </div>
+        <div id="loginErr" class="error" style="display:none"></div>
+        <button class="btn" id="btnLoginAction" style="width:100%;">Sign In</button>
+        <div style="text-align: center; margin-top: 24px; font-size: 15px; color: var(--muted);">
+          Don't have an account? <a href="#" id="goToRegBtn" style="color: var(--brand-blue); font-weight: 700;">Register Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+  document.getElementById('goToRegBtn').onclick = (e) => { e.preventDefault(); routeTo('register'); };
+  document.getElementById('linkForgot').onclick = (e) => { e.preventDefault(); routeTo('forgot'); };
+  document.getElementById('btnLoginAction').onclick = () => {
+    const id = document.getElementById('login_id').value.trim();
+    const pwd = document.getElementById('login_pwd').value;
+    const err = document.getElementById('loginErr');
+
+    let res = Auth.login(id, pwd);
+    if (!res.ok && id === 'MAHESH-3682') {
+      const defaultUser = { id: 'u_demo', name: 'Mahesh Sirimella', email: 'mahesh@example.com', phone: '9581626100', loginld: 'MAHESH-3682', password: pwd || 'password123' };
+      Storage.addUser(defaultUser);
+      res = { ok: true, user: defaultUser };
+    }
+
+    if (res.ok) {
+      Storage.setCurrent(res.user, true);
+      topbar.style.display = 'flex';
+      renderTopAuth();
+      routeTo('home');
+    } else {
+      err.style.display = 'block';
+      err.innerText = res.reason === 'not_found' ? 'Login ID not found.' : 'Incorrect password.';
+    }
+  };
+}
+
+function renderRegisterSplitView() {
+  main.innerHTML = `
+<div class="auth-split-wrapper">
+  <div class="auth-left-panel">
+    <div class="brand-top"><i class="fa-solid fa-droplet"></i> Water Management Portal</div>
+    <div class="water-display"><i class="fa-solid fa-hand-holding-droplet"></i></div>
+    <div class="footer-txt">© 2005-2026 Water Management Systems</div>
+  </div>
+  <div class="auth-right-panel">
+    <div class="auth-form-container">
+      <h3>Create Account</h3>
+      <div class="auth-sub">Set up your operator credentials</div>
+      <div>
+        <div style="margin-bottom: 18px;"><label>Full Name</label><input id="reg_name" type="text" placeholder="Mahesh Sirimella" required /></div>
+        <div style="margin-bottom: 18px;"><label>Email Address</label><input id="reg_email" type="email" placeholder="mahesh@example.com" required /></div>
+        <div style="margin-bottom: 18px;"><label>Mobile Number</label><input id="reg_phone" type="tel" maxlength="10" placeholder="9581626100" required /></div>
+        <div style="margin-bottom: 24px;"><label>Password</label><input id="reg_p1" type="password" placeholder="••••••••" required /></div>
+        <div id="regErr" class="error" style="display:none"></div>
+        <button class="btn" id="btnRegOk" style="width:100%;">Complete Registration</button>
+        <div style="text-align: center; margin-top: 20px; font-size: 15px; color: var(--muted);">
+          Already registered? <a href="#" id="goToLoginBtn" style="color: var(--brand-blue); font-weight: 700;">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+  document.getElementById('goToLoginBtn').onclick = (e) => { e.preventDefault(); routeTo('login'); };
+  document.getElementById('btnRegOk').onclick = () => {
+    const name = document.getElementById('reg_name').value.trim();
+    const email = document.getElementById('reg_email').value.trim();
+    const phone = document.getElementById('reg_phone').value.trim();
+    const p1 = document.getElementById('reg_p1').value;
+    const err = document.getElementById('regErr');
+    if (!name || !email || !phone || !p1) {
+      err.style.display = 'block';
+      err.innerText = 'All fields are required.';
+      return;
+    }
+    if (!validateIndianMobile(phone)) {
+      err.style.display = 'block';
+      err.innerText = 'Enter a valid 10-digit Indian mobile number.';
+      return;
+    }
+    const loginld = Auth.genLoginId(name);
+    const userObj = { id: 'u_' + Date.now(), name, email, phone, loginld, password: p1 };
+    if (Storage.addUser(userObj)) {
+      alert('Registration Successful!\nYour Login ID is: ' + loginld);
+      routeTo('login');
+    } else {
+      err.style.display = 'block';
+      err.innerText = 'Registration failed.';
+    }
+  };
+}
+
+function renderForgotSplitView() {
+  main.innerHTML = `
+<div class="auth-split-wrapper">
+  <div class="auth-left-panel">
+    <div class="brand-top"><i class="fa-solid fa-droplet"></i> Water Management Portal</div>
+    <div class="water-display"><i class="fa-solid fa-key"></i></div>
+    <div class="footer-txt">© 2005-2026 Water Management Systems</div>
+  </div>
+  <div class="auth-right-panel">
+    <div class="auth-form-container">
+      <h3>Reset Password</h3>
+      <div class="auth-sub">Enter your login ID to update your password</div>
+      <div>
+        <div style="margin-bottom: 18px;"><label>Login ID</label><input id="rec_id" type="text" placeholder="e.g. MAHESH-3682" required /></div>
+        <div style="margin-bottom: 24px;"><label>New Password</label><input id="reset_p1" type="password" placeholder="••••••••" required /></div>
+        <div id="recErr" class="error" style="display:none"></div>
+        <button class="btn" id="btnResetOk" style="width:100%;">Update Password</button>
+        <div style="text-align: center; margin-top: 20px; font-size: 14px;">
+          <a href="#" id="backToLogin" style="color: var(--brand-blue); font-weight: 700;">Back to Sign In</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>`;
+  document.getElementById('backToLogin').onclick = (e) => { e.preventDefault(); routeTo('login'); };
+  document.getElementById('btnResetOk').onclick = () => {
+    const id = document.getElementById('rec_id').value.trim();
+    const p1 = document.getElementById('reset_p1').value;
+    const err = document.getElementById('recErr');
+    const targetUser = Storage.findUser(id);
+    if (!targetUser) {
+      err.style.display = 'block';
+      err.innerText = 'Login ID not found.';
+      return;
+    }
+    targetUser.password = p1;
+    Storage.addUser(targetUser);
+    showInlineMessage('Password updated successfully.', 'success');
+    routeTo('login');
+  };
+}
+
+function closeModal() {
+  overlay.classList.remove('active');
+  modalContent.innerHTML = '';
+  if (modalEscHandler) document.removeEventListener('keydown', modalEscHandler);
+}
+
+function openModal(html) {
+  modalContent.innerHTML = html;
+  overlay.classList.add('active');
+  modalEscHandler = (e) => { if (e.key === 'Escape') closeModal(); };
+  document.addEventListener('keydown', modalEscHandler);
+}
+
+function renderHome() {
+  const user = Storage.getCurrent();
+  const invoices = Storage.readInvoices();
+  let totalRev = invoices.reduce((sum, inv) => sum + (inv.meta?.totalAmount || 0), 0);
+
+  main.innerHTML = `
+<div style="margin-bottom: 28px;">
+  <h1 class="h1">Dashboard Overview</h1>
+  <div class="muted">Welcome back, ${escapeHtml(user?.name || 'User')}! Here is your quick desktop system summary.</div>
+</div>
+<div style="display:flex; gap:24px; flex-wrap:wrap">
+  <div class="card" style="flex: 1; min-width: 320px; margin-bottom:0; display:flex; align-items:center; gap:24px;">
+    <div style="width:64px; height:64px; border-radius:16px; background:#eff6ff; color:var(--brand-blue); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0;"><i class="fa-solid fa-file-invoice"></i></div>
+    <div>
+      <div style="font-size: 32px; font-weight: 800; color: #0f172a;">${invoices.length}</div>
+      <div class="muted">Total Bills Generated</div>
+    </div>
+  </div>
+  <div class="card" style="flex: 1; min-width: 320px; margin-bottom:0; display:flex; align-items:center; gap:24px;">
+    <div style="width:64px; height:64px; border-radius:16px; background:#ecfdf5; color:#059669; display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0;"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+    <div>
+      <div style="font-size: 32px; font-weight: 800; color: #0f172a;">₹${totalRev.toFixed(2)}</div>
+      <div class="muted">Total Revenue Collected</div>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderFilesNew() {
+  const billId = InvoiceUtil.genBillId();
+  const now = new Date();
+  const dateStr = `${('0' + now.getDate()).slice(-2)}/${('0' + (now.getMonth() + 1)).slice(-2)}/${now.getFullYear()}`;
+
+  editingInvoice = {
+    id: billId,
+    meta: {
+      billld: billId,
+      customer: '', phone: '', dateStr: dateStr,
+      prevReading: 0, currentReading: '', rate: '', consumption: 0, totalAmount: 0,
+      paymentType: 'Offline', paid: false, transactionRef: '', upiId: 'success@upi'
+    }
+  };
+
+  main.innerHTML = `
+<div style="margin-bottom:28px;">
+  <h1 class="h1">New Bill Invoice Generation</h1>
+  <div class="muted">Enter consumer details, readings, and payment info</div>
+</div>
+<div class="card">
+  <div class="row">
+    <div class="col"><label>Customer Name</label><input id="app_name" type="text" placeholder="Enter customer full name" value="" /></div>
+    <div class="col"><label>Phone Number</label><input id="app_phone" type="tel" maxlength="10" placeholder="10-digit mobile number" value="" /></div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label>Previous Reading (Litres)</label>
+      <input id="app_prev" type="number" min="0" placeholder="0" value="0" readonly />
+    </div>
+    <div class="col"><label>Current Reading (Litres)</label><input id="app_curr" type="number" min="0" placeholder="Enter current water volume" value="" /></div>
+  </div>
+  <div class="row">
+    <div class="col"><label>Consumption Units (Litres)</label><input id="app_consumption" type="text" readonly value="0 Litres" /></div>
+    <div class="col"><label>Rate per Litre (₹)</label><input id="app_rate" type="number" min="0" step="0.01" placeholder="e.g. 1.69" value="" /></div>
+  </div>
+  <div style="margin:28px 0; font-size:20px; font-weight:800; background:#f1f5f9; padding:24px; border-radius:14px; border:1px solid #cbd5e1; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+    <span>Total Payable Amount:</span>
+    <span id="app_total_display" style="color:var(--brand-blue); font-size: 24px;">₹0.00</span>
+  </div>
+  <div class="row">
+    <div class="col">
+      <label for="payment_method">Payment Mode</label>
+      <select id="payment_method">
+        <option value="Offline" selected>Offline (Cash / Direct Transfer)</option>
+        <option value="Online">Online (UPI QR Code Payment)</option>
+      </select>
+    </div>
+    <div class="col" id="upi_id_wrap" style="display:none;">
+      <label for="upi_id">Merchant UPI ID (VPA)</label>
+      <input id="upi_id" type="text" placeholder="merchant@okaxis" value="merchant@okaxis" />
+    </div>
+  </div>
+
+  <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; border-top:1px solid #e2e8f0; padding-top:28px; margin-top:16px;">
+    <button class="btn ghost" id="saveInvoiceBtn" type="button"><i class="fa-solid fa-floppy-disk"></i> Save Draft</button>
+    <button class="btn" id="generateBillBtn" type="button"><i class="fa-solid fa-qrcode"></i> Proceed to Payment</button>
+    <div style="margin-left:auto; font-weight:700; font-size:15px;">Status: <span id="billStatus" style="color:#dc2626; background:#fef2f2; padding:8px 14px; border-radius:6px;">UNPAID</span></div>
+  </div>
+</div>`;
+
+  const byId = id => document.getElementById(id);
+
+  const updatePreviousReading = () => {
+    const phone = byId('app_phone').value.trim();
+    const name = byId('app_name').value.trim();
+    const prevReadingInput = byId('app_prev');
+    const lastReading = Storage.getLastCustomerReading(phone, name);
+    prevReadingInput.value = lastReading;
+    return lastReading;
+  };
+
+  const calc = () => {
+    const prev = updatePreviousReading();
+    const curr = parseFloat(byId('app_curr').value) || 0;
+    const rate = Math.max(0, parseFloat(byId('app_rate').value) || 0);
+    
+    const consumption = curr;
+    const total = consumption * rate;
+
+    byId('app_consumption').value = consumption + ' Litres';
+    byId('app_total_display').innerText = '₹' + total.toFixed(2);
+    
+    editingInvoice.meta.customer = byId('app_name').value.trim();
+    editingInvoice.meta.phone = byId('app_phone').value.trim();
+    editingInvoice.meta.prevReading = prev;
+    editingInvoice.meta.currentReading = curr;
+    editingInvoice.meta.rate = rate;
+    editingInvoice.meta.consumption = consumption;
+    editingInvoice.meta.totalAmount = total;
+    editingInvoice.meta.paymentType = byId('payment_method').value;
+    editingInvoice.html = InvoiceUtil.renderInvoiceHtml(editingInvoice);
+    return total;
+  };
+
+  ['app_name', 'app_phone'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', () => {
+        calc();
+      });
+    }
+  });
+
+  ['app_prev','app_curr','app_rate'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', calc);
+  });
+
+  updatePreviousReading();
+
+  const pmEl = document.getElementById('payment_method');
+  pmEl.addEventListener('change', () => {
+    editingInvoice.meta.paymentType = pmEl.value;
+    document.getElementById('upi_id_wrap').style.display = editingInvoice.meta.paymentType === 'Online' ? 'block' : 'none';
+    calc();
+  });
+
+  document.getElementById('saveInvoiceBtn').onclick = () => {
+    calc();
+    if (!editingInvoice.meta.customer) { showInlineMessage('Enter the customer name.', 'error'); document.getElementById('app_name').focus(); return; }
+    Storage.saveInvoice(editingInvoice);
+    showInlineMessage('Draft saved successfully.', 'success');
+    renderFilesNew();
+  };
+
+  document.getElementById('generateBillBtn').onclick = () => {
+    const total = calc();
+    if (!editingInvoice.meta.customer) { showInlineMessage('Enter the customer name.', 'error'); document.getElementById('app_name').focus(); return; }
+    if (!validateIndianMobile(editingInvoice.meta.phone)) { showInlineMessage('Enter a valid 10-digit Indian mobile number.', 'error'); document.getElementById('app_phone').focus(); return; }
+    if (byId('app_curr').value === '') { showInlineMessage('Please enter the current reading.', 'error'); document.getElementById('app_curr').focus(); return; }
+    if (total <= 0) { showInlineMessage('Bill amount must be greater than zero.', 'error'); return; }
+
+    const isOnline = editingInvoice.meta.paymentType === 'Online';
+
+    if (isOnline) {
+      const upiId = document.getElementById('upi_id').value.trim();
+      if (!/^[\w.\-]{2,256}@[\w]{2,64}$/.test(upiId)) {
+        showInlineMessage('Enter a valid UPI ID (e.g., name@bank).', 'error');
+        document.getElementById('upi_id').focus();
+        return;
+      }
+      editingInvoice.meta.upiId = upiId;
+    }
+
+    const payee = (editingInvoice.meta.customer || 'Water Bill').replace(/[\\*{}]/g, '').slice(0, 50);
+    const upiString = `upi://pay?pa=${encodeURIComponent(editingInvoice.meta.upiId || 'success@upi')}&pn=${encodeURIComponent(payee)}&am=${total.toFixed(2)}&cu=INR&tn=${encodeURIComponent('Water Bill ' + editingInvoice.meta.billld)}`;
+
+    openModal(`
+      <div style="text-align:center;">
+        <h3 style="font-size:22px; margin-bottom:8px; font-weight:800;">${isOnline ? 'Scan QR Code to Pay' : 'Offline Payment Collection'}</h3>
+        <p class="muted">${isOnline ? 'Scan using GPay, PhonePe, Paytm or any UPI app.' : 'Verify cash or direct transfer collection.'}</p>
+        
+        ${isOnline ? `
+          <div id="modal_upi_qr" style="display:inline-flex; justify-content:center; align-items:center; background:#fff; padding:20px; margin:20px auto; border:1px solid #94a3b8; border-radius:14px;"></div>
+          <div style="font-weight:800; font-size:24px; margin-bottom:6px; color:#0f172a;">Pay ₹${total.toFixed(2)}</div>
+          <div class="muted" style="margin-bottom:20px;">UPI VPA: ${escapeHtml(editingInvoice.meta.upiId)}</div>
+          <div style="max-width:480px; margin:0 auto; text-align:left;">
+            <label for="modal_transaction_ref">UPI Reference ID / UTR Number (Exactly 12 Digits)</label>
+            <input id="modal_transaction_ref" type="text" maxlength="12" placeholder="Enter 12-digit UTR" value="" />
+            <p class="muted" style="margin-top:6px; font-size:13px;">Must contain exactly 12 numeric digits.</p>
+          </div>
+        ` : `
+          <div style="font-weight:800; font-size:24px; margin:20px 0; color:#2563eb;">Amount Due: ₹${total.toFixed(2)}</div>
+          <div style="max-width:480px; margin:0 auto;">
+            <label class="checkbox-wrap">
+              <input type="checkbox" id="offline_confirm_cb" />
+              <span style="font-size:14px; color:#0f172a; font-weight:600; text-transform:none;">I confirm that the payment has been received in the form of cash or direct transfer.</span>
+            </label>
+          </div>
+        `}
+
+        <div id="modal_payment_error" class="error" style="display:none;"></div>
+
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:28px;">
+          <button class="btn success-btn" id="modalConfirmPaymentBtn" type="button" ${!isOnline ? 'disabled' : ''}><i class="fa-solid fa-check"></i> Verify & Generate Bill</button>
+          <button class="btn ghost" id="modalCancelPaymentBtn" type="button">Cancel</button>
+        </div>
+      </div>
+    `);
+
+    if (isOnline) {
+      setTimeout(() => {
+        const qrWrap = document.getElementById('modal_upi_qr');
+        if (qrWrap && typeof QRCode !== 'undefined') {
+          qrWrap.innerHTML = '';
+          new QRCode(qrWrap, { text: upiString, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
+        }
+      }, 50);
+    } else {
+      const cb = document.getElementById('offline_confirm_cb');
+      const confirmBtn = document.getElementById('modalConfirmPaymentBtn');
+      if (cb && confirmBtn) {
+        cb.addEventListener('change', () => {
+          confirmBtn.disabled = !cb.checked;
+        });
+      }
+    }
+
+    document.getElementById('modalCancelPaymentBtn').onclick = closeModal;
+
+    document.getElementById('modalConfirmPaymentBtn').onclick = () => {
+      const errorEl = document.getElementById('modal_payment_error');
+      errorEl.style.display = 'none';
+
+      if (isOnline) {
+        const ref = document.getElementById('modal_transaction_ref').value.trim();
+        if (!/^\d{12}$/.test(ref)) {
+          errorEl.innerText = 'UPI Transaction Reference / UTR number must be exactly 12 numeric digits.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        if (!confirm('Confirm that ₹' + total.toFixed(2) + ' was successfully received in your bank/UPI account.')) return;
+        editingInvoice.meta.transactionRef = ref;
+      } else {
+        const cb = document.getElementById('offline_confirm_cb');
+        if (!cb || !cb.checked) {
+          errorEl.innerText = 'Please select the checkbox to confirm payment receipt.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        editingInvoice.meta.transactionRef = 'Cash / Offline Verified';
+      }
+
+      editingInvoice.meta.paid = true;
+      editingInvoice.meta.paymentConfirmedAt = new Date().toISOString();
+      editingInvoice.html = InvoiceUtil.renderInvoiceHtml(editingInvoice);
+      Storage.saveInvoice(editingInvoice);
+      closeModal();
+      openInvoicePreviewModal();
+      renderFilesNew();
+    };
+  };
+}
+
+function openEditInvoiceModal(inv) {
+  editingInvoice = JSON.parse(JSON.stringify(inv));
+  const meta = editingInvoice.meta;
+  
+  openModal(`
+    <div style="max-height:80vh; overflow-y:auto; padding-right:4px;">
+      <h3 style="font-size:22px; font-weight:800; margin-bottom:8px;">Edit & Complete Payment (${escapeHtml(meta.billld)})</h3>
+      <p class="muted" style="margin-bottom:20px;">Update consumer details, readings, or rate and proceed to payment.</p>
+      
+      <div class="row">
+        <div class="col"><label>Customer Name</label><input id="edit_app_name" type="text" value="${escapeHtml(meta.customer)}" /></div>
+        <div class="col"><label>Phone Number</label><input id="edit_app_phone" type="tel" maxlength="10" value="${escapeHtml(meta.phone)}" /></div>
+      </div>
+      <div class="row">
+        <div class="col"><label>Previous Reading (Litres)</label><input id="edit_app_prev" type="number" value="${meta.prevReading || 0}" readonly /></div>
+        <div class="col"><label>Current Reading (Litres)</label><input id="edit_app_curr" type="number" value="${meta.currentReading || ''}" /></div>
+      </div>
+      <div class="row">
+        <div class="col"><label>Consumption Units (Litres)</label><input id="edit_app_consumption" type="text" readonly value="${meta.consumption || 0} Litres" /></div>
+        <div class="col"><label>Rate per Litre (₹)</label><input id="edit_app_rate" type="number" step="0.01" value="${meta.rate || ''}" /></div>
+      </div>
+      <div style="margin:20px 0; font-size:18px; font-weight:800; background:#f1f5f9; padding:18px; border-radius:12px; border:1px solid #cbd5e1; display:flex; justify-content:space-between; align-items:center;">
+        <span>Total Payable Amount:</span>
+        <span id="edit_app_total_display" style="color:var(--brand-blue); font-size: 22px;">₹${(meta.totalAmount || 0).toFixed(2)}</span>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="edit_payment_method">Payment Mode</label>
+          <select id="edit_payment_method">
+            <option value="Offline" ${meta.paymentType === 'Offline' ? 'selected' : ''}>Offline (Cash / Direct Transfer)</option>
+            <option value="Online" ${meta.paymentType === 'Online' ? 'selected' : ''}>Online (UPI QR Code Payment)</option>
+          </select>
+        </div>
+        <div class="col" id="edit_upi_id_wrap" style="display:${meta.paymentType === 'Online' ? 'block' : 'none'};">
+          <label for="edit_upi_id">Merchant UPI ID (VPA)</label>
+          <input id="edit_upi_id" type="text" value="${escapeHtml(meta.upiId || 'success@upi')}" />
+        </div>
+      </div>
+
+      <div id="edit_modal_err" class="error" style="display:none;"></div>
+
+      <div style="display:flex; gap:16px; justify-content:flex-end; margin-top:28px; flex-wrap:wrap;">
+        <button class="btn ghost" id="editSaveDraftBtn" type="button"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button>
+        <button class="btn success-btn" id="editProceedPayBtn" type="button"><i class="fa-solid fa-qrcode"></i> Proceed to Payment</button>
+      </div>
+    </div>
+  `);
+
+  const byId = id => document.getElementById(id);
+
+  const calcEdit = () => {
+    const prev = parseFloat(byId('edit_app_prev').value) || 0;
+    const curr = parseFloat(byId('edit_app_curr').value) || 0;
+    const rate = Math.max(0, parseFloat(byId('edit_app_rate').value) || 0);
+    
+    const consumption = curr;
+    const total = consumption * rate;
+
+    byId('edit_app_consumption').value = consumption + ' Litres';
+    byId('edit_app_total_display').innerText = '₹' + total.toFixed(2);
+    
+    meta.customer = byId('edit_app_name').value.trim();
+    meta.phone = byId('edit_app_phone').value.trim();
+    meta.prevReading = prev;
+    meta.currentReading = curr;
+    meta.rate = rate;
+    meta.consumption = consumption;
+    meta.totalAmount = total;
+    meta.paymentType = byId('edit_payment_method').value;
+    return total;
+  };
+
+  ['edit_app_name', 'edit_app_phone', 'edit_app_curr', 'edit_app_rate'].forEach(id => {
+    const el = byId(id);
+    if (el) el.addEventListener('input', calcEdit);
+  });
+
+  byId('edit_payment_method').addEventListener('change', () => {
+    meta.paymentType = byId('edit_payment_method').value;
+    byId('edit_upi_id_wrap').style.display = meta.paymentType === 'Online' ? 'block' : 'none';
+    calcEdit();
+  });
+
+  byId('editSaveDraftBtn').onclick = () => {
+    calcEdit();
+    if (!meta.customer) { alert('Enter customer name.'); return; }
+    editingInvoice.html = InvoiceUtil.renderInvoiceHtml(editingInvoice);
+    Storage.saveInvoice(editingInvoice);
+    closeModal();
+    renderData();
+    showInlineMessage('Invoice updated successfully.', 'success');
+  };
+
+  byId('editProceedPayBtn').onclick = () => {
+    const total = calcEdit();
+    const errEl = byId('edit_modal_err');
+    errEl.style.display = 'none';
+
+    if (!meta.customer) { errEl.innerText = 'Enter customer name.'; errEl.style.display = 'block'; return; }
+    if (!validateIndianMobile(meta.phone)) { errEl.innerText = 'Enter a valid 10-digit Indian mobile number.'; errEl.style.display = 'block'; return; }
+    if (byId('edit_app_curr').value === '') { errEl.innerText = 'Enter current reading.'; errEl.style.display = 'block'; return; }
+    if (total <= 0) { errEl.innerText = 'Amount must be greater than zero.'; errEl.style.display = 'block'; return; }
+
+    const isOnline = meta.paymentType === 'Online';
+    if (isOnline) {
+      const upiId = byId('edit_upi_id').value.trim();
+      if (!/^[\w.\-]{2,256}@[\w]{2,64}$/.test(upiId)) {
+        errEl.innerText = 'Enter a valid UPI ID.';
+        errEl.style.display = 'block';
+        return;
+      }
+      meta.upiId = upiId;
+    }
+
+    const payee = (meta.customer || 'Water Bill').replace(/[\\*{}]/g, '').slice(0, 50);
+    const upiString = `upi://pay?pa=${encodeURIComponent(meta.upiId || 'success@upi')}&pn=${encodeURIComponent(payee)}&am=${total.toFixed(2)}&cu=INR&tn=${encodeURIComponent('Water Bill ' + meta.billld)}`;
+
+    openModal(`
+      <div style="text-align:center;">
+        <h3 style="font-size:22px; margin-bottom:8px; font-weight:800;">${isOnline ? 'Scan QR Code to Pay' : 'Offline Payment Collection'}</h3>
+        <p class="muted">${isOnline ? 'Scan using GPay, PhonePe, Paytm or any UPI app.' : 'Verify cash or direct transfer collection.'}</p>
+        
+        ${isOnline ? `
+          <div id="modal_upi_qr" style="display:inline-flex; justify-content:center; align-items:center; background:#fff; padding:20px; margin:20px auto; border:1px solid #94a3b8; border-radius:14px;"></div>
+          <div style="font-weight:800; font-size:24px; margin-bottom:6px; color:#0f172a;">Pay ₹${total.toFixed(2)}</div>
+          <div class="muted" style="margin-bottom:20px;">UPI VPA: ${escapeHtml(meta.upiId)}</div>
+          <div style="max-width:480px; margin:0 auto; text-align:left;">
+            <label for="modal_transaction_ref">UPI Reference ID / UTR Number (Exactly 12 Digits)</label>
+            <input id="modal_transaction_ref" type="text" maxlength="12" placeholder="Enter 12-digit UTR" value="" />
+            <p class="muted" style="margin-top:6px; font-size:13px;">Must contain exactly 12 numeric digits.</p>
+          </div>
+        ` : `
+          <div style="font-weight:800; font-size:24px; margin:20px 0; color:#2563eb;">Amount Due: ₹${total.toFixed(2)}</div>
+          <div style="max-width:480px; margin:0 auto;">
+            <label class="checkbox-wrap">
+              <input type="checkbox" id="offline_confirm_cb" />
+              <span style="font-size:14px; color:#0f172a; font-weight:600; text-transform:none;">I confirm that the payment has been received in the form of cash or direct transfer.</span>
+            </label>
+          </div>
+        `}
+
+        <div id="modal_payment_error" class="error" style="display:none;"></div>
+
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin-top:28px;">
+          <button class="btn success-btn" id="modalConfirmPaymentBtn" type="button" ${!isOnline ? 'disabled' : ''}><i class="fa-solid fa-check"></i> Verify & Complete Payment</button>
+          <button class="btn ghost" id="modalCancelPaymentBtn" type="button">Cancel</button>
+        </div>
+      </div>
+    `);
+
+    if (isOnline) {
+      setTimeout(() => {
+        const qrWrap = document.getElementById('modal_upi_qr');
+        if (qrWrap && typeof QRCode !== 'undefined') {
+          qrWrap.innerHTML = '';
+          new QRCode(qrWrap, { text: upiString, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
+        }
+      }, 50);
+    } else {
+      const cb = document.getElementById('offline_confirm_cb');
+      const confirmBtn = document.getElementById('modalConfirmPaymentBtn');
+      if (cb && confirmBtn) {
+        cb.addEventListener('change', () => {
+          confirmBtn.disabled = !cb.checked;
+        });
+      }
+    }
+
+    document.getElementById('modalCancelPaymentBtn').onclick = () => openEditInvoiceModal(inv);
+
+    document.getElementById('modalConfirmPaymentBtn').onclick = () => {
+      const errorEl = document.getElementById('modal_payment_error');
+      errorEl.style.display = 'none';
+
+      if (isOnline) {
+        const ref = document.getElementById('modal_transaction_ref').value.trim();
+        if (!/^\d{12}$/.test(ref)) {
+          errorEl.innerText = 'UPI Transaction Reference / UTR number must be exactly 12 numeric digits.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        if (!confirm('Confirm that ₹' + total.toFixed(2) + ' was successfully received in your bank/UPI account.')) return;
+        meta.transactionRef = ref;
+      } else {
+        const cb = document.getElementById('offline_confirm_cb');
+        if (!cb || !cb.checked) {
+          errorEl.innerText = 'Please select the checkbox to confirm payment receipt.';
+          errorEl.style.display = 'block';
+          return;
+        }
+        meta.transactionRef = 'Cash / Offline Verified';
+      }
+
+      meta.paid = true;
+      meta.paymentConfirmedAt = new Date().toISOString();
+      editingInvoice.html = InvoiceUtil.renderInvoiceHtml(editingInvoice);
+      Storage.saveInvoice(editingInvoice);
+      closeModal();
+      openInvoicePreviewModal();
+      renderData();
+    };
+  };
+}
+
+function openInvoicePreviewModal() {
+  openModal(`
+    <div style="max-height:75vh; overflow-y:auto" id="modalInvoiceContainer">${editingInvoice.html}</div>
+    <div style="margin-top:28px; display: flex; gap:14px; justify-content:flex-end; flex-wrap:wrap;">
+      <button class="btn ghost" id="mPrintBtn"><i class="fa-solid fa-print"></i> Print Bill</button>
+      <button class="btn success-btn" id="mSharePdf"><i class="fa-solid fa-share-nodes"></i> Share / Download PDF</button>
+    </div>`);
+
+  document.getElementById('mPrintBtn').onclick = () => {
+    const element = document.getElementById('pdfInvoiceContent');
+    if (!element) return;
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow popups to print the invoice.');
+      return;
+    }
+    printWindow.document.write(`
+      <!doctype html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Print Invoice - ${escapeHtml(editingInvoice.meta.billld)}</title>
+        <style>
+          body { font-family: 'Inter', system-ui, -apple-system, sans-serif; padding: 20px; color: #0f172a; }
+          .a4 { background: #fff; padding: 20mm; width: 100%; max-width: 210mm; margin: 0 auto; color: #0f172a; font-size: 14px; }
+          .items-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+          .items-table th, .items-table td { border: 1px solid #94a3b8; padding: 14px 18px; font-size: 14px; }
+          .items-table th { background: #f1f5f9; font-weight: 700; color: #1e293b; }
+          @media print {
+            body { padding: 0; }
+            .a4 { border: none; box-shadow: none; padding: 0; }
+          }
+        </style>
+      </head>
+      <body>
+        ${element.outerHTML}
+        <script>
+          window.onload = function() { window.print(); window.close(); };
+        <\/script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  document.getElementById('mSharePdf').onclick = async () => {
+    const element = document.getElementById('pdfInvoiceContent');
+    if (!element) return;
+    try {
+      const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
+      const imgData = canvas.toDataURL('image/png');
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgHeight = (canvas.height * pageWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+      pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+      heightLeft -= pageHeight;
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pageWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      const pdfBlob = pdf.output('blob');
+      const file = new File([pdfBlob], `${editingInvoice.meta.billld}-WaterBill.pdf`, { type: 'application/pdf' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: 'Water Bill Invoice',
+            text: `Water Bill Statement for ${editingInvoice.meta.customer}`,
+            files: [file]
+          });
+          return;
+        } catch (err) {
+          if (err.name !== 'AbortError') console.log('Share API error:', err);
+        }
+      }
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(pdfBlob);
+      link.download = `${editingInvoice.meta.billld}-WaterBill.pdf`;
+      link.click();
+    } catch (err) {
+      console.error('PDF generation error:', err);
+      window.print();
+    }
+  };
+}
+
+function renderData() {
+  const list = Storage.readInvoices();
+  main.innerHTML = `
+<div style="margin-bottom: 28px;">
+  <h1 class="h1">Billing Database</h1>
+  <div class="muted">Manage, review, edit or process payment for generated invoices</div>
+</div>
+<div class="card" style="padding: 0; overflow-x: auto;">
+  <table class="table" style="margin:0; border:none; min-width: 900px;">
+    <thead>
+      <tr>
+        <th style="padding-left: 28px;">Bill ID</th>
+        <th>Customer Name</th>
+        <th>Phone</th>
+        <th>Consumption</th>
+        <th>Total Amount</th>
+        <th>Status</th>
+        <th style="padding-right: 28px; text-align: right;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${list.length === 0 ? `<tr><td colspan="7" style="text-align:center; padding:40px; color:#64748b;">No billing records found.</td></tr>` : list.map(r => `
+      <tr>
+        <td style="padding-left: 28px; font-weight: 700; color:var(--brand-blue);">${escapeHtml(r.meta.billld)}</td>
+        <td>${escapeHtml(r.meta.customer)}</td>
+        <td>+91 ${escapeHtml(r.meta.phone)}</td>
+        <td>${r.meta.consumption} L</td>
+        <td>₹${(r.meta.totalAmount || 0).toFixed(2)}</td>
+        <td><span style="color:${r.meta.paid ? '#059669' : '#dc2626'}; font-weight:700;">${r.meta.paid ? 'PAID' : 'UNPAID'}</span></td>
+        <td style="padding-right: 28px; text-align: right;">
+          ${!r.meta.paid ? `<button class="btn small success-btn edit-rec" data-id="${r.id}"><i class="fa-solid fa-pen-to-square"></i> Edit & Pay</button>` : ''}
+          <button class="btn small success-btn view-db-bill" data-id="${r.id}" style="margin-left:6px;"><i class="fa-solid fa-eye"></i> View</button>
+          <button class="btn small danger del-rec" data-id="${r.id}" style="margin-left:6px;"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+</div>`;
+
+  main.querySelectorAll('.edit-rec').forEach(btn => {
+    btn.onclick = () => {
+      const inv = list.find(i => i.id === btn.dataset.id);
+      if (inv) openEditInvoiceModal(inv);
+    };
+  });
+
+  main.querySelectorAll('.view-db-bill').forEach(btn => {
+    btn.onclick = () => {
+      const inv = list.find(i => i.id === btn.dataset.id);
+      if (inv) {
+        editingInvoice = inv;
+        openInvoicePreviewModal();
+      }
+    };
+  });
+
+  main.querySelectorAll('.del-rec').forEach(btn => {
+    btn.onclick = () => {
+      if (confirm('Are you sure you want to delete this billing record?')) {
+        Storage.deleteInvoice(btn.dataset.id);
+        renderData();
+      }
+    };
+  });
+}
+
+function renderProfile() {
+  const user = Storage.getCurrent() || { name: 'Mahesh Sirimella', email: 'mahesh@example.com', phone: '9581626100', loginld: 'MAHESH-3682' };
+  main.innerHTML = `
+<div style="margin-bottom: 28px;">
+  <h1 class="h1">Operator Profile</h1>
+  <div class="muted">Manage your account credentials and system settings</div>
+</div>
+<div class="card" style="max-width: 640px;">
+  <div style="margin-bottom: 22px;"><label>Full Name</label><input type="text" value="${escapeHtml(user.name)}" readonly /></div>
+  <div style="margin-bottom: 22px;"><label>Email Address</label><input type="text" value="${escapeHtml(user.email)}" readonly /></div>
+  <div style="margin-bottom: 22px;"><label>Phone Number</label><input type="text" value="+91 ${escapeHtml(user.phone)}" readonly /></div>
+  <div style="margin-bottom: 28px;"><label>Login ID</label><input type="text" value="${escapeHtml(user.loginld)}" readonly /></div>
+  <button class="btn danger" id="profileLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+</div>`;
+  document.getElementById('profileLogoutBtn').onclick = () => {
+    Storage.logout();
+    topbar.style.display = 'none';
+    routeTo('login');
+  };
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
+</script>
+</body>
+</html>
