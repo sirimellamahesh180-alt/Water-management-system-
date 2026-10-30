@@ -561,6 +561,102 @@ footer.app-footer {
   }
 </style>
 
+
+<style id="dashboard-visual-refresh">
+  /* Dashboard-only visual refinement; application behavior and other screens remain unchanged. */
+  .hero-wrapper {
+    padding: clamp(26px, 4vw, 52px);
+    margin-bottom: clamp(22px, 3vw, 34px);
+    border-radius: 26px;
+    background: linear-gradient(135deg, rgba(3, 20, 39, .94), rgba(5, 45, 68, .88));
+    border: 1px solid rgba(103, 232, 249, .24);
+    box-shadow: 0 24px 65px rgba(0, 8, 24, .42), inset 0 1px rgba(255,255,255,.06);
+  }
+  .hero-glow-bg {
+    background: radial-gradient(ellipse at 12% 8%, rgba(6,182,212,.2), transparent 55%),
+                radial-gradient(ellipse at 90% 90%, rgba(14,165,233,.14), transparent 48%);
+  }
+  .hero-content { align-items: flex-start; gap: 28px; }
+  .hero-text-side { flex: 1 1 560px; min-width: min(100%, 280px); }
+  .hero-pill {
+    background: rgba(8, 145, 178, .18);
+    border-color: rgba(103, 232, 249, .3);
+    color: #a5f3fc;
+    letter-spacing: .02em;
+  }
+  .hero-title {
+    max-width: 850px;
+    font-size: clamp(27px, 3.2vw, 44px);
+    line-height: 1.12;
+    letter-spacing: -.035em;
+    text-wrap: balance;
+  }
+  .hero-desc { color: #c0d5e4; max-width: 760px; line-height: 1.75; }
+  .hero-stats { gap: clamp(18px, 3vw, 34px); }
+  .hero-stat-item { border-left-color: #22d3ee; padding: 2px 0 2px 15px; }
+  .hero-stat-val { font-size: clamp(22px, 2.2vw, 29px); }
+  .hero-stat-lbl { color: #b4c9d9; letter-spacing: .045em; line-height: 1.5; }
+  .hero-content > div:last-child { display:flex; flex-wrap:wrap; align-items:center; gap:12px !important; }
+  .hero-content > div:last-child .btn { min-height: 48px; padding: 12px 20px; border-radius: 13px; }
+  main > div[style*="display:flex"][style*="flex-wrap:wrap"] {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px !important;
+    margin-top: 4px;
+  }
+  main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card {
+    min-width: 0 !important;
+    min-height: 168px;
+    margin: 0 !important;
+    padding: clamp(22px, 3vw, 34px) !important;
+    display: flex;
+    align-items: center;
+    gap: 22px !important;
+    background: linear-gradient(145deg, rgba(5, 25, 48, .94), rgba(7, 45, 66, .9));
+    border: 1px solid rgba(125, 211, 252, .25);
+    border-radius: 24px;
+    box-shadow: 0 18px 45px rgba(0, 8, 24, .32), inset 0 1px rgba(255,255,255,.05);
+    transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+  }
+  main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(103, 232, 249, .5);
+    box-shadow: 0 24px 52px rgba(0, 8, 24, .4);
+  }
+  main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card > div:first-child {
+    width: 66px !important; height: 66px !important; border-radius: 18px !important;
+    font-size: 25px !important; flex: 0 0 66px;
+  }
+  main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card > div:nth-child(2) > div:first-child {
+    font-size: clamp(27px, 3vw, 36px) !important;
+    line-height: 1.15; margin-bottom: 7px;
+    overflow-wrap: anywhere;
+  }
+  main > div[style*="display:flex"][style*="flex-wrap:wrap"] .muted {
+    color: #c0d5e4; font-size: 14px; line-height: 1.5;
+  }
+  @media (max-width: 760px) {
+    .hero-wrapper { padding: 24px 20px; border-radius: 20px; }
+    .hero-content { gap: 22px; }
+    .hero-content > div:last-child { width: 100%; }
+    .hero-content > div:last-child .btn { flex: 1 1 145px; }
+    main > div[style*="display:flex"][style*="flex-wrap:wrap"] { grid-template-columns: 1fr; gap: 14px !important; }
+    main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card { min-height: 136px; }
+  }
+  @media (max-width: 420px) {
+    .hero-title { font-size: 26px; }
+    .hero-desc { font-size: 14px; }
+    .hero-stats { gap: 14px 20px; }
+    .hero-stat-lbl { font-size: 10px; }
+    main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card { padding: 18px !important; gap: 16px !important; }
+    main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card > div:first-child { width: 54px !important; height: 54px !important; flex-basis: 54px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card { transition: none; }
+    main > div[style*="display:flex"][style*="flex-wrap:wrap"] > .card:hover { transform: none; }
+  }
+</style>
+
 </head>
 <body>
 
@@ -1426,10 +1522,22 @@ function openModal(html) {
   document.addEventListener('keydown', modalEscHandler);
 }
 
+function calculateRevenueFromGeneratedBills(invoices) {
+  // Include every saved bill, whether paid or pending. Convert legacy string
+  // amounts to numbers so they are added arithmetically rather than concatenated.
+  return invoices.reduce((total, invoice) => {
+    const rawAmount = invoice?.meta?.totalAmount;
+    const amount = typeof rawAmount === 'string'
+      ? Number(rawAmount.replace(/[₹,\\s]/g, ''))
+      : Number(rawAmount);
+    return total + (Number.isFinite(amount) && amount > 0 ? amount : 0);
+  }, 0);
+}
+
 function renderHome() {
   const user = Storage.getCurrent();
   const invoices = Storage.readInvoices();
-  let totalRev = invoices.reduce((sum, inv) => sum + (inv.meta?.totalAmount || 0), 0);
+  const totalRev = calculateRevenueFromGeneratedBills(invoices);
   main.innerHTML = `
 <!-- Hero Section -->
 <div class="hero-wrapper">
@@ -1446,11 +1554,7 @@ function renderHome() {
         </div>
         <div class="hero-stat-item">
           <div class="hero-stat-val">₹${totalRev.toFixed(0)}</div>
-          <div class="hero-stat-lbl">Revenue Tracked</div>
-        </div>
-        <div class="hero-stat-item">
-          <div class="hero-stat-val">99.99%</div>
-          <div class="hero-stat-lbl">Tidal Sensor Uptime</div>
+          <div class="hero-stat-lbl">Revenue from Generated Bills</div>
         </div>
       </div>
     </div>
@@ -1475,13 +1579,13 @@ function renderHome() {
       <div class="muted">Total Bills Generated</div>
     </div>
   </div>
-  <div class="card" style="flex: 1; min-width: 320px; margin-bottom:0; display:flex; align-items:center; gap:24px;">
-    <div style="width:68px; height:68px; border-radius:20px; background:linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.3) 100%); border:1px solid rgba(52,211,153,0.4); color:#34d399; display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; box-shadow:0 10px 25px rgba(0,0,0,0.4);">
+  <div class="card revenue-card" style="flex: 1; min-width: 320px; margin-bottom:0; display:flex; align-items:center; gap:24px;">
+    <div class="revenue-icon" style="width:68px; height:68px; border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0;">
       <i class="fa-solid fa-indian-rupee-sign"></i>
     </div>
     <div>
-      <div style="font-size: 34px; font-weight: 800; color: #fff;">₹${totalRev.toFixed(2)}</div>
-      <div class="muted">Total Revenue Collected</div>
+      <div class="revenue-value">₹${totalRev.toFixed(2)}</div>
+      <div class="revenue-label">Total Revenue from All Generated Bills</div>
     </div>
   </div>
 </div>`;
@@ -1908,7 +2012,182 @@ function openInvoicePreviewModal() {
             body { padding: 0; }
             .a4 { border: none; box-shadow: none; padding: 0; }
           }
-        </style>
+        
+
+/* Screenshot-matched dashboard layout: centered coastal glass panel */
+body { min-height: 100vh; }
+#main:has(.hero-wrapper) {
+  width: min(1100px, calc(100% - 48px));
+  margin: clamp(28px, 5vh, 58px) auto 64px;
+  padding: clamp(24px, 3vw, 38px);
+  border: 1px solid rgba(125, 211, 252, .28);
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(2, 28, 54, .94), rgba(4, 61, 91, .91));
+  box-shadow: 0 24px 65px rgba(0, 13, 35, .42), inset 0 1px rgba(255,255,255,.06);
+  color: #f4fbff;
+}
+#main:has(.hero-wrapper) .hero-wrapper {
+  margin: 0 0 24px;
+  padding: 0 0 22px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  overflow: visible;
+}
+#main:has(.hero-wrapper) .hero-glow-bg { display: none; }
+#main:has(.hero-wrapper) .hero-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 22px 30px;
+}
+#main:has(.hero-wrapper) .hero-text-side { min-width: 0; flex: initial; }
+#main:has(.hero-wrapper) .hero-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 7px 13px;
+  border: 1px solid rgba(103, 232, 249, .4);
+  border-radius: 999px;
+  background: rgba(8, 145, 178, .2);
+  color: #b9f5ff;
+  font-size: 12px;
+  font-weight: 700;
+}
+#main:has(.hero-wrapper) .hero-title {
+  max-width: none;
+  margin: 0 0 13px;
+  font-size: clamp(27px, 3vw, 38px);
+  line-height: 1.12;
+  letter-spacing: -.04em;
+}
+#main:has(.hero-wrapper) .hero-desc {
+  max-width: 720px;
+  margin: 0 0 24px;
+  color: #c7dce9;
+  font-size: 14px;
+  line-height: 1.65;
+}
+#main:has(.hero-wrapper) .hero-stats { gap: 24px; }
+#main:has(.hero-wrapper) .hero-stat-item {
+  min-width: 125px;
+  padding-left: 13px;
+  border-left: 3px solid #22d3ee;
+}
+#main:has(.hero-wrapper) .hero-stat-val { color: #fff; font-size: 24px; font-weight: 800; }
+#main:has(.hero-wrapper) .hero-stat-lbl { color: #c5dbe8; font-size: 10px; font-weight: 800; letter-spacing: .045em; text-transform: uppercase; }
+#main:has(.hero-wrapper) .hero-content > div:last-child {
+  width: auto;
+  align-self: end;
+  justify-content: flex-end;
+}
+#main:has(.hero-wrapper) .hero-content > div:last-child .btn {
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 10px 17px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+#main:has(.hero-wrapper) > div[style*="margin-bottom: 28px"] {
+  margin: 0 0 18px !important;
+  padding-top: 2px;
+}
+#main:has(.hero-wrapper) > div[style*="margin-bottom: 28px"] .h1 {
+  color: #f7fcff;
+  font-size: clamp(21px, 2.3vw, 27px);
+  letter-spacing: -.025em;
+}
+#main:has(.hero-wrapper) > div[style*="margin-bottom: 28px"] .muted { color: #b9d4e3; }
+#main:has(.hero-wrapper) > div[style*="display:flex; gap:24px"] {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px !important;
+}
+#main:has(.hero-wrapper) .card {
+  min-height: 132px;
+  padding: 22px !important;
+  gap: 18px !important;
+  background: linear-gradient(145deg, rgba(23, 42, 91, .94), rgba(30, 54, 112, .91));
+  border: 1px solid rgba(129, 177, 255, .35);
+  border-radius: 22px;
+  box-shadow: 0 12px 30px rgba(0, 13, 35, .24), inset 0 1px rgba(255,255,255,.06);
+}
+#main:has(.hero-wrapper) .card > div:nth-child(2) > div:first-child { color: #fff; }
+#main:has(.hero-wrapper) .card .muted { color: #d3e3f3; }
+@media (max-width: 760px) {
+  #main:has(.hero-wrapper) { width: min(100% - 24px, 600px); margin: 20px auto 36px; padding: 22px 18px; border-radius: 22px; }
+  #main:has(.hero-wrapper) .hero-content { grid-template-columns: 1fr; gap: 18px; }
+  #main:has(.hero-wrapper) .hero-content > div:last-child { justify-content: flex-start; }
+  #main:has(.hero-wrapper) .hero-stats { gap: 15px 18px; }
+  #main:has(.hero-wrapper) > div[style*="display:flex; gap:24px"] { grid-template-columns: 1fr; }
+  #main:has(.hero-wrapper) .card { min-height: 112px; }
+}
+@media (max-width: 420px) {
+  #main:has(.hero-wrapper) .hero-title { font-size: 25px; }
+  #main:has(.hero-wrapper) .hero-desc { font-size: 13px; }
+  #main:has(.hero-wrapper) .hero-content > div:last-child .btn { flex: 1 1 130px; }
+}
+
+
+
+/* User-provided light coastal theme + dedicated revenue styling */
+:root {
+  --brand-blue: #0284c7;
+  --brand-cyan: #06b6d4;
+  --brand-glow: #0284c7;
+  --brand-gradient: linear-gradient(135deg, #0284c7 0%, #06b6d4 50%, #38bdf8 100%);
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --border-color: rgba(2, 132, 199, 0.15);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+}
+body {
+  background-color: #f0f9ff;
+  background-image: linear-gradient(180deg, rgba(240, 249, 255, 0.9), rgba(224, 242, 254, 0.9));
+}
+#main:has(.hero-wrapper) .revenue-card {
+  background: var(--card-bg) !important;
+  color: #0f172a;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 14px 34px rgba(2, 132, 199, 0.12);
+  transition: var(--transition);
+}
+#main:has(.hero-wrapper) .revenue-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 42px rgba(2, 132, 199, 0.18);
+}
+#main:has(.hero-wrapper) .revenue-icon {
+  color: var(--brand-blue);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.16), rgba(2, 132, 199, 0.12));
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.12);
+}
+#main:has(.hero-wrapper) .revenue-value {
+  color: var(--brand-blue);
+  font-size: clamp(28px, 3vw, 36px);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+#main:has(.hero-wrapper) .revenue-label {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+@media (max-width: 640px) {
+  #main:has(.hero-wrapper) .revenue-card { min-width: 0 !important; padding: 18px !important; gap: 16px !important; }
+  #main:has(.hero-wrapper) .revenue-icon { width: 56px !important; height: 56px !important; font-size: 23px !important; }
+}
+
+</style>
       </head>
       <body>
         ${element.outerHTML}
